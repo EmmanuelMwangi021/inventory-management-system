@@ -1,5 +1,6 @@
 from flask import jsonify, Blueprint, request
 from data.data import products
+from services.openfoodfacts import get_product_by_barcode
 
 products_blueprint = Blueprint("products", __name__)
 
@@ -123,3 +124,14 @@ def delete_product(product_id):
         
         products.remove(product)
         return jsonify({"message": "Product deleted successfully."}), 200
+
+
+# Route for searching a product using barcode
+@products_blueprint.route("/api/products/barcode/<barcode>", methods =["GET"])
+def search_product_by_barcode(barcode):
+    product = get_product_by_barcode(barcode)
+    if product is None:
+        return jsonify({"error": "Product not found."}), 404
+    
+    return jsonify(product)
+
