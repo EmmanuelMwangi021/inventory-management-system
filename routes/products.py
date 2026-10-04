@@ -128,10 +128,28 @@ def delete_product(product_id):
 
 # Route for searching a product using barcode
 @products_blueprint.route("/api/products/barcode/<barcode>", methods =["GET"])
-def search_product_by_barcode(barcode):
+def lookup_product_by_barcode(barcode):
     product = get_product_by_barcode(barcode)
     if product is None:
         return jsonify({"error": "Product not found."}), 404
     
     return jsonify(product)
+
+# Route for searching a product using Name of product
+@products_blueprint.route("/api/products/search", methods=["GET"])
+def search_product_by_name():
+    name = request.args.get("name").strip()
+    if not name:
+        return jsonify({"error": "Search Name is required."}), 400
+
+    matches = []
+    for match in matches:
+        if matches is None:
+            return jsonify({"error": "Product not found."}), 404
+
+    for product in products:
+        if name.lower() in product["name"].lower():
+            matches.append(product)
+        
+    return jsonify(matches), 200
 

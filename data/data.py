@@ -19,5 +19,12 @@ products = [
         "barcode": "456789012345",
         "price": 50,
         "quantity": 60
+    },
+    {
+        "id": 4,
+        "name": "Nutella",
+        "barcode": "3017624010701",
+        "price": 650,
+        "quantity": 10
     }
 ]
