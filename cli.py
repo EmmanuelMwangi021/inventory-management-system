@@ -1,3 +1,6 @@
+from data.data import products
+from services.openfoodfacts import get_product_by_barcode
+
 def show_menu():
     print("\n=== Inventory Management System ===")
     print("1. List Products")
@@ -5,18 +8,80 @@ def show_menu():
     print("3. Add Product")
     print("4. Update Product")
     print("5. Delete Product")
-    print("6. Search OpenFoodFacts")
+    print("6. Search for Products using Barcode")
     print("7. Exit")
 
 if __name__ == "__main__":
-    show_menu()
+    while True:
+        show_menu()
 
-    choice = input("Choose an option:")
+        choice = input("Choose an option:")
 
-    if choice == "1":
-        print("Listing products...")
-    elif choice == "7":
-        print("Goodbye!")
-    else:
-        print("Invalid option")
+        if choice == "1":
+            for product in products:
+                print(product)
+
+        elif choice == "2":
+            product_id = int(input("Enter product ID:"))
+            for product in products:
+                if product["id"] == product_id:
+                    print(product)
+                    break
+            else:
+                print("Product not found")
+        
+        elif choice == "3":
+            name = input("Enter product name:")
+            price = float(input("Enter product price:"))
+            barcode = input("Enter product barcode:")
+            quantity = int(input("Enter product quantity:"))
+
+            new_id = max(product["id"] for product in products) + 1
+            new_product = {
+                "id": new_id,
+                "name": name,
+                "price": price,
+                "barcode": barcode,
+                "quantity": quantity
+            }
+            products.append(new_product)
+            print("Product added successfully")
+        
+        elif choice == "4":
+            product_id = int(input("Enter product ID to update:"))
+            for product in products:
+                if product["id"] == product_id:
+                    product["name"] = input(f"Enter new name:")
+                    product["price"] = float(input(f"Enter new price:"))
+                    product["quantity"] = int(input(f"Enter new quantity:"))
+
+                    print("Product updated successfully")
+                    break
+            else:
+                print("Product not found")
+        
+        elif choice == "5":
+            product_id = int(input("Enter product ID to delete:"))
+            for product in products:
+                if product["id"] == product_id:
+                    products.remove(product)
+                    print("Product deleted successfully")
+                    break
+            else:
+                print("Product not found")
+        
+        elif choice == "6":
+            barcode = input("Enter product barcode to search:")
+            product = get_product_by_barcode(barcode)
+            if product:
+                print(product)
+            else:
+                print("Product not found!")
+
+
+        elif choice == "7":
+            print("Goodbye!")
+            break
+        else:
+            print("Invalid option")
 
