@@ -119,11 +119,11 @@ def delete_product(product_id):
             product = item
             break
         
-        if product is None:
-            return jsonify({"error": "Product not found"}), 404
+    if product is None:
+        return jsonify({"error": "Product not found"}), 404
         
-        products.remove(product)
-        return jsonify({"message": "Product deleted successfully."}), 200
+    products.remove(product)
+    return jsonify({"message": "Product deleted successfully."}), 200
 
 
 # Route for searching a product using barcode
