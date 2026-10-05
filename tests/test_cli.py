@@ -1,5 +1,43 @@
 from unittest.mock import patch
+import copy
 import cli
+import pytest
+
+
+@pytest.fixture(autouse=True)
+def reset_products():
+    original_products = [
+        {
+        "id": 1,
+        "name": "Milk",
+        "barcode": "123456789012",
+        "price": 100,
+        "quantity": 20
+        },
+        {
+        "id": 2,
+        "name": "Bread",
+        "barcode": "987654321098",
+        "price": 70,
+        "quantity": 15
+        },
+        {
+        "id": 3,
+        "name": "Eggs",
+        "barcode": "456789012345",
+        "price": 50,
+        "quantity": 60
+        },
+        {
+        "id": 4,
+        "name": "Nutella",
+        "barcode": "3017624010701",
+        "price": 650,
+        "quantity": 10
+        }
+    ]
+    with patch("cli.products", copy.deepcopy(original_products)):
+        yield
 
 def test_show_menu(capsys):
     cli.show_menu()
@@ -88,3 +126,33 @@ def test_delete_product_not_found(capsys):
 
     assert "Product not found" in captured.out
 
+def test_search_product(capsys):
+    mock_product = {
+        "name": "Nutella",
+        "barcode": "3017624010701",
+        "brand": "Ferrero"
+    }
+
+    with patch("builtins.input", return_value="3017624010701"):
+        with patch(
+            "cli.get_product_by_barcode",
+            return_value=mock_product
+        ):
+            cli.search_product_by_barcode()
+
+    captured = capsys.readouterr()
+
+    assert "Nutella" in captured.out
+    assert "Ferrero" in captured.out
+
+def test_search_product_not_found(capsys):
+    with patch("builtins.input", return_value="9999999999999"):
+        with patch(
+            "cli.get_product_by_barcode",
+            return_value=None
+        ):
+            cli.search_product_by_barcode()
+
+    captured = capsys.readouterr()
+
+    assert "Product not found!" in captured.out
