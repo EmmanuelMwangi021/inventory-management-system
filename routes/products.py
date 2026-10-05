@@ -143,10 +143,7 @@ def search_product_by_name():
         return jsonify({"error": "Search Name is required."}), 400
 
     matches = []
-    for match in matches:
-        if matches is None:
-            return jsonify({"error": "Product not found."}), 404
-
+    
     for product in products:
         if name.lower() in product["name"].lower():
             matches.append(product)
